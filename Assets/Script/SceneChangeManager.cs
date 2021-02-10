@@ -21,8 +21,5 @@ public class SceneChangeManager : MonoBehaviour
     }
     #endregion
 
-    public void Main()
-    {
-        SceneManager.LoadScene("Main");
-    }
+    
 }

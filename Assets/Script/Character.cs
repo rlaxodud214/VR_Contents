@@ -5,13 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class Character : MonoBehaviour
 {
+    // 싱글톤 패턴
+    #region Singleton
+    private static Character _Instance;    // 싱글톤 패턴을 사용하기 위한 인스턴스 변수, static으로 선언하여 어디서든 접근 가능
+
     // 이동관련 변수
     public Vector3 vec;
     public float obstacleTimer;
     private bool isTimer = false;
-    // 맵 오브젝트 제거를 위한 변수들
-    //public List<Collision> L = new List<Collision> { };
-    //public int idx = 0;
 
     // 캐릭터 오브젝트 관련 변수들
     public GameObject character;        
@@ -20,7 +21,8 @@ public class Character : MonoBehaviour
 
     // 점프관련 변수
     public bool isGround = true;
-    bool isjump = false;
+    public float JumpPower = 4f;
+    public bool isjump = false;
 
     // 게임 클리어 관련 변수
     public int Star_Amount = 0; // 별을 먹은 갯수
@@ -41,9 +43,17 @@ public class Character : MonoBehaviour
     public float stayTime = 0f;        // 포탈에 머무른 시간 : stayTime += Time.deltatime
     public float PotalStayTime = 2f;   // 2초 머물러야 이동
 
+    // 인스턴스에 접근하기 위한 프로퍼티
+    public static Character Instance
+    {
+        get { return _Instance; }  // UIManager 인스턴스 변수를 리턴
+    }
+
+    #endregion
     private void Awake()
     {
-        for(int i=0; i< Blueposition.Length; i++)
+        _Instance = GetComponent<Character>();  // _uiManager에 UIManager의 컴포넌트(자기 자신)에 대한 참조를 얻음
+        for (int i=0; i< Blueposition.Length; i++)
         {
             Blueposition[i] = BluePotal[i].transform.position;
         }
@@ -51,9 +61,10 @@ public class Character : MonoBehaviour
         {
             Redposition[i] = RedPotal[i].transform.position;
         }
-        isClear = Random.Range(0, 10);
-        if (isClear == 3) // 3은 스폰장소에 있는 탈출구이므로 최대한 3이 안나오게 하기 위해 추가함
-            isClear = Random.Range(0, 10);
+        isClear = 3;
+        //isClear = Random.Range(0, 10);
+        //if (isClear == 3) // 3은 스폰장소에 있는 탈출구이므로 최대한 3이 안나오게 하기 위해 추가함
+        //    isClear = Random.Range(0, 10);
     }
     // Start is called before the first frame update
     void Start()
@@ -69,12 +80,18 @@ public class Character : MonoBehaviour
         {
             obstacleTimer += Time.deltaTime;
         }
-        // x축, y축, z축의 값을 가진 Vector3 생성
-        vec = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")) * Time.deltaTime * movespeed;
+        //// x축, y축, z축의 값을 가진 Vector3 생성
+        // vec = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")) * Time.deltaTime * movespeed;
+        jump();
+        inputkey();
+    }
+    void jump()
+    {
+        vec = new Vector3(0f, 0f, 0f);
 
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
-            vec += Vector3.up * 5f;
+            vec += Vector3.up * JumpPower;
             isGround = false;
             Invoke("isGround_On", 1.2f);
             isjump = true;
@@ -87,36 +104,21 @@ public class Character : MonoBehaviour
             SoundManager.Instance.Jump();
             isjump = false;
         }
-
-        //if (Input.GetKey(KeyCode.A))
-        //{
-        //    // Debug.Log("0");
-        //    transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-        //    transform.Translate(Vector3.forward * 2f * Time.deltaTime);
-        //}
-        //if (Input.GetKey(KeyCode.W))
-        //{
-        //    // Debug.Log("90");
-        //    transform.rotation = Quaternion.Euler(new Vector3(0, 90, 0));
-        //    transform.Translate(Vector3.forward * 2f * Time.deltaTime);
-        //}
-        //if (Input.GetKey(KeyCode.D))
-        //{
-        //    // Debug.Log("180");
-        //    transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-        //    transform.Translate(Vector3.forward * 2f * Time.deltaTime);
-        //}
-
-        //if (Input.GetKey(KeyCode.S))
-        //{
-        //    // Debug.Log("270");
-        //    transform.rotation = Quaternion.Euler(new Vector3(0, 270, 0));
-        //    transform.Translate(Vector3.forward * 2f * Time.deltaTime);
-        //}
-
-
     }
+    void inputkey()
+    {
+        if (Input.GetKey(KeyCode.W))                                transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+        if (Input.GetKey(KeyCode.A))                                transform.rotation = Quaternion.Euler(new Vector3(0, -90, 0));
+        if (Input.GetKey(KeyCode.S))                                transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+        if (Input.GetKey(KeyCode.D))                                transform.rotation = Quaternion.Euler(new Vector3(0, 90, 0));
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A))     transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D))     transform.rotation = Quaternion.Euler(new Vector3(0, 45, 0));
+        if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A))     transform.rotation = Quaternion.Euler(new Vector3(0, -135, 0));
+        if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))     transform.rotation = Quaternion.Euler(new Vector3(0, 135, 0));
 
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+            transform.Translate(Vector3.forward * 2f * Time.deltaTime);
+    }
     void isGround_On() { isGround = true; }
 
     private void OnCollisionEnter(Collision collision) {
@@ -130,43 +132,34 @@ public class Character : MonoBehaviour
         if (collision.gameObject.tag == "Wood")
         {
             Debug.Log("나무판 : 나무판이 사라짐");
-            //L.Add(collision);
-            //idx++;
             StartCoroutine(DestroyObject(collision.gameObject));
             StopCoroutine(DestroyObject(null));
         }
-
-      
+              
         if (collision.gameObject.tag == "LightBlue")
         {
             // Debug.Log("LightBlue : 일정한 확률로 떨어짐");
             int num = Random.Range(0, 6);
             if(num < 7)
             {
-                //L.Add(collision);
-                //idx++;
                 StartCoroutine(DestroyObject(collision.gameObject));
                 StopCoroutine(DestroyObject(null));
             }
         }
         // HP 적용할지 말지 고민중 - 안하면 아래 if문이랑 합치기
-        if (collision.gameObject.tag == "Trap")
+        if (collision.gameObject.tag == "Trap" || collision.gameObject.name == "Ground")
         {
-            SceneManager.LoadScene("Game");
-            SoundManager.Instance.GameOver();
-        }
-            
-        if (collision.gameObject.name == "Ground")
-        {
-            SceneManager.LoadScene("Game");
-            SoundManager.Instance.GameOver();
+            UIManager.Instance.GameOver();
         }
 
         if (collision.gameObject.tag == "Star")
         {
+            UIManager.Instance.StarUI.transform.GetChild(Star_Amount).gameObject.SetActive(true);
             Star_Amount++;
             Debug.Log("Star_Amount : " + Star_Amount);
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<CapsuleCollider>().enabled = false;  // 콜라이더 비활성화
+            collision.gameObject.transform.Find("FX").gameObject.SetActive(false); // 별모양 비활성화
+            collision.gameObject.transform.GetChild(1).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 Light를 활성화
         }
     }
 
@@ -198,18 +191,12 @@ public class Character : MonoBehaviour
             stayTime = 0f;
         }
     }
-    private void OnCollisionExit (Collision collision) {
-        stayTime = 0f;
-        }
+    private void OnCollisionExit(Collision collision) { stayTime = 0f; }
 
     private IEnumerator DestroyObject(GameObject Object)
     {
-        Debug.Log("DestroyObject 호출완료");
-        if (name != null)
-        {
-            yield return new WaitForSeconds(2f);
-            Destroy(Object);
-        }
+        yield return new WaitForSeconds(1f);
+        Destroy(Object);
     }
 
     private void Blueteleport()
@@ -232,18 +219,19 @@ public class Character : MonoBehaviour
         Debug.Log("현재 통로 : " + collision.gameObject.name);
         if (collision.gameObject.name == ("Waypoint" + isClear.ToString()))
         {
-            Debug.Log("탈출구 맞음!");
-            if(Star_Amount >= 10)
+            UIManager.Instance.Answer_Ok();
+            if (Star_Amount >= 10)
             {
-                Debug.Log("게임 클리어");
+                UIManager.Instance.GameClear();
             }
             else
-                Debug.Log("별을 " + (10 - Star_Amount) + "개 더 모으세요");
+                UIManager.Instance.Star_print();
         }
-            
+        
         else
         {
             Debug.Log("탈출구 아님!");
+            UIManager.Instance.Answer_Non();
             SoundManager.Instance.NonPassed();
         }
             
