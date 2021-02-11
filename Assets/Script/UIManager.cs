@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     private static UIManager _Instance;    // 싱글톤 패턴을 사용하기 위한 인스턴스 변수, static으로 선언하여 어디서든 접근 가능
     public GameObject ResultPanel;
     public GameObject EscapePanel;
-    public GameObject StarPanel;
+    public GameObject PlayTimePanel;
     public GameObject StarUI;
     public Text play_time; // 결과
     public Text Star;      // 결과, 탈출, 별
@@ -34,16 +34,21 @@ public class UIManager : MonoBehaviour
     public void GameOver() //게임오버+결과화면 함수
     {
         Time.timeScale = 0f;
-        play_time.text = "플레이 시간 : " + GameManager.Instance.play_time.ToString("N2");
+        play_time.text = "클리어 시간 : " + GameManager.Instance.play_time.ToString("N2") + "초";
         SoundManager.Instance.GameOver();
-        MoveCamera.Instance.Play_Time_Text.gameObject.SetActive(false);
-        MoveCamera.Instance.play_Time.gameObject.SetActive(false);
+        PlayTimePanel.SetActive(false);
+        EscapePanel.SetActive(false);
+        StarUI.SetActive(false);
         ResultPanel.SetActive(true);
         ResultPanel.gameObject.transform.GetChild(0).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 Light를 활성화
     }
     public void GameClear()
     {
         Time.timeScale = 0f;
+        play_time.text = "플레이 시간 : " + GameManager.Instance.play_time.ToString("N2") + "초";
+        PlayTimePanel.SetActive(false);
+        EscapePanel.SetActive(false);
+        StarUI.SetActive(false);
         ResultPanel.SetActive(true);
         ResultPanel.gameObject.transform.GetChild(1).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 Light를 활성화
     }
@@ -52,30 +57,34 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Game");
-        Time.timeScale = 1f;
     }
 
     public void Answer_Ok()
     {
         EscapePanel.SetActive(true);
         EscapePanel.gameObject.transform.GetChild(0).transform.gameObject.SetActive(true); // 자식 오브젝트중 0번째 활성화
+        Star.text = "별을 " + (10 - Character.Instance.Star_Amount) + "개 더 모으세요";
+        EscapePanel.gameObject.transform.GetChild(2).transform.gameObject.SetActive(true);   // 자식 오브젝트중 0번째 활성화
+        Invoke("Answer_Ok_off", 1.5f);
+    }
+
+    public void Answer_Ok_off()
+    {
+        EscapePanel.gameObject.transform.GetChild(0).transform.gameObject.SetActive(false); // 자식 오브젝트중 0번째 활성화
+        EscapePanel.gameObject.transform.GetChild(2).transform.gameObject.SetActive(false);   // 자식 오브젝트중 0번째 활성화
+        EscapePanel.SetActive(false);
     }
 
     public void Answer_Non()
     {
         EscapePanel.SetActive(true);
         EscapePanel.gameObject.transform.GetChild(1).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 활성화
+        Invoke("Answer_Non_off", 1.5f);
     }
 
-    public void Star_print()
+    public void Answer_Non_off()
     {
-        Star.text = "탈출 불가: 별을 " + (Character.Instance.Star_Amount-10) + "개 더 모으세요";
-        StarPanel.gameObject.transform.GetChild(0).transform.gameObject.SetActive(true);   // 자식 오브젝트중 0번째 활성화
-        Invoke("Star_print_off", 1f);
-    }
-
-    public void Star_print_off()
-    {
-        StarPanel.gameObject.transform.GetChild(0).transform.gameObject.SetActive(false);   // 자식 오브젝트중 0번째 활성화
+        EscapePanel.gameObject.transform.GetChild(1).transform.gameObject.SetActive(false); // 자식 오브젝트중 1번째 활성화
+        EscapePanel.SetActive(false);
     }
 }

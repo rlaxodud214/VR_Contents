@@ -9,6 +9,9 @@ public class MoveCamera : MonoBehaviour
     public Vector3 target_position;
     public Text Play_Time_Text;
     public Text play_Time;
+    public float camera_move_speed = 2f;
+    public float plus_y;
+    public float minus_z;
 
     #region Singleton                                         // 싱글톤 패턴은 하나의 인스턴스에 전역적인 접근을 시키며 보통 호출될 때 인스턴스화 되므로 사용하지 않는다면 생성되지도 않습니다.
 
@@ -21,13 +24,15 @@ public class MoveCamera : MonoBehaviour
     void Awake()                                               // Start()보다 먼저 실행
     {
         _Instance = GetComponent<MoveCamera>();    // _sceneManager변수에 자신의 SceneChangeManager 컴포넌트를 넣는다.
+        plus_y = 8f;
+        minus_z = 5f;
     }
     #endregion 
 
     void Update()
     {
-        target_position = new Vector3(target.position.x, target.position.y + 5, target.position.z - 5);
-        transform.position = Vector3.Lerp(transform.position, target_position, Time.deltaTime * 1.5f);
+        target_position = new Vector3(target.position.x, target.position.y + plus_y, target.position.z - minus_z);
+        transform.position = Vector3.Lerp(transform.position, target_position, Time.deltaTime * camera_move_speed);
         play_Time.text = GameManager.Instance.play_time.ToString("N2");
     }
 }

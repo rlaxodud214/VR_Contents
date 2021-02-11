@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     public Light Directional_Light; // 2초후에 사라질 빛
     public float play_time;
-
+    public float lightOffTime = 2f; // 2초후에 불이 꺼지게 하는 시간값
     private static GameManager _Instance;             // 싱글톤 객체 선언, 어디에서든지 접근할 수 있도록 하기위해 
 
     public static GameManager Instance                    // 객체에 접근하기 위한 속성으로 내부에 get set을 사용한다.
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Invoke("lightOff", 3f);
+        Invoke("lightOff", lightOffTime);
     }
 
     // Update is called once per frame
@@ -33,5 +33,8 @@ public class GameManager : MonoBehaviour
         play_time += Time.deltaTime;
     }
 
-    void lightOff() { Destroy(Directional_Light); }
+    void lightOff() { 
+        Destroy(Directional_Light);
+        UIManager.Instance.PlayTimePanel.SetActive(true);
+    }
 }

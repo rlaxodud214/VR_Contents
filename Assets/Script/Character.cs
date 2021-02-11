@@ -17,11 +17,11 @@ public class Character : MonoBehaviour
     // 캐릭터 오브젝트 관련 변수들
     public GameObject character;        
     public Vector3 Position;
-    public float movespeed = 2.2f;
+    public float movespeed = 3f;
 
     // 점프관련 변수
     public bool isGround = true;
-    public float JumpPower = 4f;
+    public float JumpPower = 2f;
     public bool isjump = false;
 
     // 게임 클리어 관련 변수
@@ -61,7 +61,7 @@ public class Character : MonoBehaviour
         {
             Redposition[i] = RedPotal[i].transform.position;
         }
-        isClear = 3;
+        isClear = 3; // 테스트용
         //isClear = Random.Range(0, 10);
         //if (isClear == 3) // 3은 스폰장소에 있는 탈출구이므로 최대한 3이 안나오게 하기 위해 추가함
         //    isClear = Random.Range(0, 10);
@@ -93,7 +93,7 @@ public class Character : MonoBehaviour
         {
             vec += Vector3.up * JumpPower;
             isGround = false;
-            Invoke("isGround_On", 1.2f);
+            Invoke("isGround_On", 0.8f); // 1초후 점프 가능상태로 변경하는 코드
             isjump = true;
         }
 
@@ -117,7 +117,7 @@ public class Character : MonoBehaviour
         if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))     transform.rotation = Quaternion.Euler(new Vector3(0, 135, 0));
 
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
-            transform.Translate(Vector3.forward * 2f * Time.deltaTime);
+            transform.Translate(Vector3.forward * movespeed * Time.deltaTime);
     }
     void isGround_On() { isGround = true; }
 
@@ -215,8 +215,8 @@ public class Character : MonoBehaviour
 
     private void Check_Clear(Collision collision)
     {
-        Debug.Log("탈출구 : " + ("Waypoint" + isClear.ToString()));
-        Debug.Log("현재 통로 : " + collision.gameObject.name);
+        // Debug.Log("탈출구 : " + ("Waypoint" + isClear.ToString()));
+        // Debug.Log("현재 통로 : " + collision.gameObject.name);
         if (collision.gameObject.name == ("Waypoint" + isClear.ToString()))
         {
             UIManager.Instance.Answer_Ok();
@@ -224,17 +224,16 @@ public class Character : MonoBehaviour
             {
                 UIManager.Instance.GameClear();
             }
-            else
-                UIManager.Instance.Star_print();
+            //else
+            //    Invoke("temp", 1.5f);
         }
         
         else
         {
-            Debug.Log("탈출구 아님!");
+            // Debug.Log("탈출구 아님!");
             UIManager.Instance.Answer_Non();
             SoundManager.Instance.NonPassed();
         }
-            
     }
 }
 
