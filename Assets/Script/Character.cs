@@ -22,8 +22,7 @@ public class Character : MonoBehaviour
     // 점프관련 변수
     public bool isGround = true;
     public float JumpPower = 2f;
-    public bool isjump = false;
-
+    
     // 게임 클리어 관련 변수
     public int Star_Amount = 0; // 별을 먹은 갯수
 
@@ -32,10 +31,12 @@ public class Character : MonoBehaviour
     public int isClear;
 
     // 블루포탈 관련 변수들
+    public GameObject Blue;
     public GameObject[] BluePotal = new GameObject[6];
     public Vector3[] Blueposition = new Vector3[6];
 
     // 레드포탈 관련 변수들
+    public GameObject Red;
     public GameObject[] RedPotal = new GameObject[8];
     public Vector3[] Redposition = new Vector3[8];
 
@@ -66,12 +67,6 @@ public class Character : MonoBehaviour
         //if (isClear == 3) // 3은 스폰장소에 있는 탈출구이므로 최대한 3이 안나오게 하기 위해 추가함
         //    isClear = Random.Range(0, 10);
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        // StartCoroutine(DestroyObject(null, 0));
-        //L.Add(null);
-    }
     
     // Update is called once per frame
     void Update()
@@ -91,20 +86,15 @@ public class Character : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && isGround)
         {
+            SoundManager.Instance.Jump();
             vec += Vector3.up * JumpPower;
             isGround = false;
             Invoke("isGround_On", 0.8f); // 1초후 점프 가능상태로 변경하는 코드
-            isjump = true;
         }
-
         transform.Translate(vec); // Vector3 : 3차원의 벡터 값
-
-        if (isjump)
-        {
-            SoundManager.Instance.Jump();
-            isjump = false;
-        }
     }
+    void isGround_On() { isGround = true; }
+
     void inputkey()
     {
         if (Input.GetKey(KeyCode.W))                                transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
@@ -119,7 +109,7 @@ public class Character : MonoBehaviour
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
             transform.Translate(Vector3.forward * movespeed * Time.deltaTime);
     }
-    void isGround_On() { isGround = true; }
+    
 
     private void OnCollisionEnter(Collision collision) {
 
@@ -131,7 +121,7 @@ public class Character : MonoBehaviour
 
         if (collision.gameObject.tag == "Wood")
         {
-            Debug.Log("나무판 : 나무판이 사라짐");
+            //Debug.Log("나무판 : 나무판이 사라짐");
             StartCoroutine(DestroyObject(collision.gameObject));
             StopCoroutine(DestroyObject(null));
         }
@@ -139,8 +129,8 @@ public class Character : MonoBehaviour
         if (collision.gameObject.tag == "LightBlue")
         {
             // Debug.Log("LightBlue : 일정한 확률로 떨어짐");
-            int num = Random.Range(0, 6);
-            if(num < 7)
+            int num = Random.Range(0, 2); // 0 or 1
+            if(num == 0) // 50% 확률
             {
                 StartCoroutine(DestroyObject(collision.gameObject));
                 StopCoroutine(DestroyObject(null));
@@ -160,6 +150,7 @@ public class Character : MonoBehaviour
             collision.gameObject.GetComponent<CapsuleCollider>().enabled = false;  // 콜라이더 비활성화
             collision.gameObject.transform.Find("FX").gameObject.SetActive(false); // 별모양 비활성화
             collision.gameObject.transform.GetChild(1).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 Light를 활성화
+            UIManager.Instance.print_Star();
         }
     }
 
@@ -174,14 +165,14 @@ public class Character : MonoBehaviour
         {
             if (collision.gameObject.tag == "RedPotal") 
             { 
-                Debug.Log("레드포탈 : 랜덤 위치로 이동~~");
-                Redteleport();
+                //Debug.Log("레드포탈 : 랜덤 위치로 이동~~");
+                Redteleport(collision.gameObject);
             }
 
             if (collision.gameObject.tag == "BluePotal")
             {
-                Debug.Log("블루포탈 : 다른 블루포탈로 이동~~");
-                Blueteleport();
+                //Debug.Log("블루포탈 : 다른 블루포탈로 이동~~");
+                Blueteleport(collision.gameObject);
             }
 
             if (collision.gameObject.tag == "Clear")
@@ -199,18 +190,34 @@ public class Character : MonoBehaviour
         Destroy(Object);
     }
 
-    private void Blueteleport()
+    private void Blueteleport(GameObject Object)
     {
         int num = Random.Range(0, 6);
-        gameObject.transform.position = Blueposition[num];
-        SoundManager.Instance.Blue_Potal();
+        // 같은 위치로 텔레포트하는 것 방지
+        //Debug.Log("index : " + Blue.transform.Find(Object.name).GetSiblingIndex());
+        //Debug.Log("num : " + num);
+        if (Blue.transform.Find(Object.name).GetSiblingIndex() != num) 
+        {
+            gameObject.transform.position = Blueposition[num];
+            SoundManager.Instance.Blue_Potal();
+        }
+        else
+            Blueteleport(Object);
     }
 
-    private void Redteleport()
+    private void Redteleport(GameObject Object)
     {
         int num = Random.Range(0, 8);
-        gameObject.transform.position = Redposition[num];
-        SoundManager.Instance.Red_Potal();
+        // 같은 위치로 텔레포트하는 것 방지
+        //Debug.Log("index : " + Red.transform.Find(Object.name).GetSiblingIndex());
+        //Debug.Log("num : " + num);
+        if (Red.transform.Find(Object.name).GetSiblingIndex() != num) 
+        {
+            gameObject.transform.position = Redposition[num];
+            SoundManager.Instance.Red_Potal();
+        }
+        else
+            Redteleport(Object);
     }
 
     private void Check_Clear(Collision collision)
