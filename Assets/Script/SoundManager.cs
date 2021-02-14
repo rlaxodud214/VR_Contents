@@ -10,11 +10,12 @@ public class SoundManager : MonoBehaviour
     public AudioClip jump;           // 점프시
     public AudioClip getstar;        // 별획득시
 
-    //public AudioClip Passed;       // 탈출구가 맞을 떄
+    public AudioClip Passed;       // 탈출구가 맞을 떄
     public AudioClip nonPassed;      // 탈출구가 아닐 때
     public AudioClip Gameover;       // 말그대로
     public AudioClip Gameclear;      // 클리어시
     public AudioClip Button_Click;   // 버튼 클릭음
+    public AudioClip trap;           // 트랩 밟았을 때
 
     // 싱글톤 패턴
     #region Singleton
@@ -53,6 +54,10 @@ public class SoundManager : MonoBehaviour
     {
         myAudio.PlayOneShot(jump); // 오디오 소스로 소리를 한 번 재생시킴
     }
+    public void PASS()
+    {
+        myAudio.PlayOneShot(Passed);
+    }
 
     public void NonPassed()
     {
@@ -70,5 +75,10 @@ public class SoundManager : MonoBehaviour
     {
         myAudio.PlayOneShot(Gameclear); // 오디오 소스로 소리를 한 번 재생시킴
     }
+    public void Trap()
+    {
+        myAudio.PlayOneShot(trap); // 오디오 소스로 소리를 한 번 재생시킴
+    }
 }
+
 

@@ -137,10 +137,13 @@ public class Character : MonoBehaviour
             }
         }
         // HP 적용할지 말지 고민중 - 안하면 아래 if문이랑 합치기
-        if (collision.gameObject.tag == "Trap" || collision.gameObject.name == "Ground")
+        if (collision.gameObject.tag == "Trap")
         {
             UIManager.Instance.GameOver();
+            SoundManager.Instance.Trap();
         }
+        if (collision.gameObject.name == "Ground")
+            UIManager.Instance.GameOver();
 
         if (collision.gameObject.tag == "Star")
         {
@@ -228,12 +231,11 @@ public class Character : MonoBehaviour
         if (collision.gameObject.name == ("Waypoint" + isClear.ToString()))
         {
             UIManager.Instance.Answer_Ok();
+            SoundManager.Instance.PASS();
             if (Star_Amount >= 10)
             {
                 UIManager.Instance.GameClear();
             }
-            //else
-            //    Invoke("temp", 1.5f);
         }
         
         else
