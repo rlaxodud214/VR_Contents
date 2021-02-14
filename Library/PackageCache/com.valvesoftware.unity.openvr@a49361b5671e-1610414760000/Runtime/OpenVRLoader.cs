@@ -192,7 +192,8 @@ namespace Unity.XR.OpenVR
             if (result != EVRInitError.None)
             {
                 DestroySubsystem<XRDisplaySubsystem>();
-                Debug.LogError("<b>[OpenVR]</b> Could not initialize OpenVR. Error code: " + result.ToString());
+                Debug.Log("<b>[OpenVR]</b> Could not initialize OpenVR. Error code: " + result.ToString());
+                // Debug.LogError("<b>[OpenVR]</b> Could not initialize OpenVR. Error code: " + result.ToString());
                 return false;
             }
 

@@ -22,6 +22,7 @@ public class MoveCamera : MonoBehaviour
 
     void Awake()                                               // Start()보다 먼저 실행
     {
+        Screen.SetResolution(1440, 1660, false);
         _Instance = GetComponent<MoveCamera>();    // _sceneManager변수에 자신의 SceneChangeManager 컴포넌트를 넣는다.
         x = -5.5f;
         y = -2f;

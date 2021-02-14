@@ -14,6 +14,8 @@ public class UIManager : MonoBehaviour
     public GameObject PlayTimePanel;
     public GameObject StarPanel;
     public GameObject StarUI;
+    public GameObject SpeedPanel;
+    public Text speed;
     public Text StarPanel_Text;
     public Text play_time; // 결과
     public Text Star;      // 결과, 탈출, 별
@@ -38,10 +40,11 @@ public class UIManager : MonoBehaviour
     public void GameOver() //게임오버+결과화면 함수
     {
         Time.timeScale = 0f;
-        play_time.text = "클리어 시간 : " + GameManager.Instance.play_time.ToString("N2") + "초";
+        play_time.text = "Play Time : " + GameManager.Instance.play_time.ToString("N2") + "초";
         SoundManager.Instance.GameOver();
         PlayTimePanel.SetActive(false);
         EscapePanel.SetActive(false);
+        SpeedPanel.SetActive(false);
         StarUI.SetActive(false);
         ResultPanel.SetActive(true);
         ResultPanel.gameObject.transform.GetChild(0).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 Light를 활성화
@@ -49,9 +52,11 @@ public class UIManager : MonoBehaviour
     public void GameClear()
     {
         Time.timeScale = 0f;
-        play_time.text = "플레이 시간 : " + GameManager.Instance.play_time.ToString("N2") + "초";
+        play_time.text = "Clear Time : " + GameManager.Instance.play_time.ToString("N2") + "초";
+        SoundManager.Instance.GameClear();
         PlayTimePanel.SetActive(false);
         EscapePanel.SetActive(false);
+        SpeedPanel.SetActive(false);
         StarUI.SetActive(false);
         ResultPanel.SetActive(true);
         ResultPanel.gameObject.transform.GetChild(1).transform.gameObject.SetActive(true); // 자식 오브젝트중 1번째 Light를 활성화
@@ -102,5 +107,17 @@ public class UIManager : MonoBehaviour
     public void print_Star_off()
     {
         StarPanel.SetActive(false);
+    }
+
+    public void Speed_Panel(float s)
+    {
+        SoundManager.Instance.buttonClick();
+        SpeedPanel.SetActive(true);
+        speed.text = "이동속도 : " + s;
+        Invoke("Speed_Panel_off", Panel_Print_Time);
+    }
+    public void Speed_Panel_off()
+    {
+        SpeedPanel.SetActive(false);
     }
 }

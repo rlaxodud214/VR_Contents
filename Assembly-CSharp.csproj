@@ -629,8 +629,14 @@
     <Reference Include="Unity.XR.OpenVR.Editor">
       <HintPath>C:/Users/GIGABYTE/Desktop/unity/VR_Contents/Library/ScriptAssemblies/Unity.XR.OpenVR.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.XR.Oculus">
+      <HintPath>C:/Users/GIGABYTE/Desktop/unity/VR_Contents/Library/ScriptAssemblies/Unity.XR.Oculus.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/GIGABYTE/Desktop/unity/VR_Contents/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.XR.Oculus.Editor">
+      <HintPath>C:/Users/GIGABYTE/Desktop/unity/VR_Contents/Library/ScriptAssemblies/Unity.XR.Oculus.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Users/GIGABYTE/Desktop/unity/VR_Contents/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
@@ -667,6 +673,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="SteamVR_Actions.csproj">
+      <Project>{E79C7FDB-EEE7-BBA5-DA41-68073791D8C1}</Project>
+      <Name>SteamVR_Actions</Name>
+    </ProjectReference>
     <ProjectReference Include="SteamVR_Input_Editor.csproj">
       <Project>{CF06A028-C457-4D9A-05E5-4724CC27B683}</Project>
       <Name>SteamVR_Input_Editor</Name>

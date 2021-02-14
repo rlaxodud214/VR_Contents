@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     void Awake()                                      // 제일 처음 호출되는 함수
     {
         _Instance = GetComponent<GameManager>();      // _gManager라는 변수에 자신의 GameManager 컴포넌트를 참조하는 값을 저장, Game속성에 set코드를 짜면 다르게 대입가능
-    }                                               // Start is called before the first frame update
+    }                                             
     #endregion
 
     void Start()

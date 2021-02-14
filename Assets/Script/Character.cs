@@ -41,8 +41,8 @@ public class Character : MonoBehaviour
     public Vector3[] Redposition = new Vector3[8];
 
     // 포탈 관련 변수들(공통)
-    public float stayTime = 0f;        // 포탈에 머무른 시간 : stayTime += Time.deltatime
-    public float PotalStayTime = 2f;   // 2초 머물러야 이동
+    public float stayTime = 0f;          // 포탈에 머무른 시간 : stayTime += Time.deltatime
+    public float PotalStayTime = 2.2f;   // 2.2초 머물러야 이동
 
     // 인스턴스에 접근하기 위한 프로퍼티
     public static Character Instance
@@ -67,7 +67,7 @@ public class Character : MonoBehaviour
         //if (isClear == 3) // 3은 스폰장소에 있는 탈출구이므로 최대한 3이 안나오게 하기 위해 추가함
         //    isClear = Random.Range(0, 10);
     }
-    
+
     // Update is called once per frame
     void Update()
     {
@@ -144,6 +144,7 @@ public class Character : MonoBehaviour
 
         if (collision.gameObject.tag == "Star")
         {
+            SoundManager.Instance.GetStar();
             UIManager.Instance.StarUI.transform.GetChild(Star_Amount).gameObject.SetActive(true);
             Star_Amount++;
             Debug.Log("Star_Amount : " + Star_Amount);
@@ -241,6 +242,15 @@ public class Character : MonoBehaviour
             UIManager.Instance.Answer_Non();
             SoundManager.Instance.NonPassed();
         }
+    }
+
+    public void speed_up() { 
+        movespeed += 1;
+        UIManager.Instance.Speed_Panel(movespeed);
+    }
+    public void speed_down() { 
+        movespeed -= 1;
+        UIManager.Instance.Speed_Panel(movespeed);
     }
 }
 
