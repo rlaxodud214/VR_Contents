@@ -20,6 +20,7 @@ public class MoveCamera : MonoBehaviour
         get { return _Instance; }                         // _sceneManager이 변수값을 리턴받을 수 있음.
     }
 
+
     void Awake()                                               // Start()보다 먼저 실행
     {
         Screen.SetResolution(1440, 1660, false);
